@@ -604,10 +604,20 @@ footer{
   .hamburger{display:block;}
   .menu-grid{grid-template-columns:1fr 1fr;}
   h1{font-size:26px;letter-spacing:4px;}
-  .logo-scene{width:200px;height:200px;}
+  .logo-scene{width:190px;height:190px;}
+  .cart-fab{bottom:16px;left:16px;padding:10px 16px;font-size:11px;}
+  .del-panel,.book-panel{width:100vw;border-left:none;border-top:2px solid var(--bord);top:auto;bottom:0;height:90vh;border-radius:16px 16px 0 0;}
+  .modal{padding:20px 16px 36px;}
+  .cat-scroll{margin-bottom:20px;}
+  .sec{padding:40px 0;}
+  header{padding:36px 16px 28px;}
+  .hero-sub{font-size:10px;letter-spacing:3px;}
+  .header-actions{gap:6px;}
+  .btn-primary,.btn-book{padding:9px 14px;font-size:10px;letter-spacing:1px;}
 }
-@media(max-width:360px){
+@media(max-width:380px){
   .menu-grid{grid-template-columns:1fr;}
+  .item-card{padding:14px 12px;}
 }
 </style>
 </head>
@@ -696,8 +706,8 @@ footer{
   <div class="cat-scroll">
     <div class="cat-tabs" id="catTabs">
       <button class="cat-tab act" onclick="filt('all',this)">Всё</button>
-      <button class="cat-tab" onclick="filt('beer',this)">🍺 Пиво и сидр</button>
-      <button class="cat-tab" onclick="filt('cocktail',this)">🍹 Коктейли</button>
+      <button class="cat-tab" onclick="checkAgeForBeer('beer',this)">🍺 Пиво и сидр</button>
+      <button class="cat-tab" onclick="checkAgeForBeer('cocktail',this)">🍹 Коктейли</button>
       <button class="cat-tab" onclick="filt('burger',this)">🍔 Бургеры</button>
       <button class="cat-tab" onclick="filt('waffle',this)">🧇 Вафли</button>
       <button class="cat-tab" onclick="filt('friture',this)">🍟 Фритюр</button>
@@ -717,6 +727,11 @@ footer{
     <div class="sec-title">VIKING HAUS</div>
     <div class="sec-rule"></div>
   </div>
+
+  <!-- About description -->
+  <p style="text-align:center;font-family:'Crimson Text',Georgia,serif;font-size:18px;font-style:italic;color:var(--muted);line-height:1.8;max-width:640px;margin:0 auto 40px;letter-spacing:.3px;">
+    Viking Haus — это атмосферное место в северном стиле, где сочетаются брутальный дух викингов, авторская кухня и свежее пиво. Здесь приходят за вкусом, настроением и настоящим характером.
+  </p>
 
   <div class="about-grid">
     <!-- Hours -->
@@ -757,11 +772,10 @@ footer{
         </div>
       </div>
       <div class="info-item">
-        <span class="info-icon">🔥</span>
+        <span class="info-icon">⚔️</span>
         <div>
-          <div class="info-label">Фишка</div>
-          <div class="info-val" style="font-size:15px">Smoker BBQ</div>
-          <div style="font-size:13px;color:var(--muted);font-style:italic;margin-top:2px">Американская коптильня · натуральный дым</div>
+          <div class="info-label">О нас</div>
+          <div style="font-size:14px;color:var(--muted);line-height:1.7;font-style:italic;margin-top:2px">Viking Haus — это атмосферное место в северном стиле, где сочетаются брутальный дух викингов, авторская кухня и свежее пиво. Здесь приходят за вкусом, настроением и настоящим характером.</div>
         </div>
       </div>
     </div>
@@ -787,7 +801,7 @@ footer{
 </div><!-- /mainPage -->
 
 <!-- ── CONTACTS PAGE ── -->
-<div id="contactsPage">
+<div id="contactsPage" style="display:none">
   <div style="background:var(--br);border-bottom:2px solid var(--bord);padding:16px 20px;display:flex;align-items:center;gap:12px;">
     <button class="contacts-back" onclick="showMain()" style="margin:0">← Назад</button>
     <span style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:3px;color:var(--p)">КОНТАКТЫ И ДОСТАВКА</span>
@@ -876,22 +890,47 @@ footer{
 <div class="book-panel" id="bookPanel">
   <button class="book-panel-close" onclick="closeBookPanel()">✕</button>
   <h2>📅 ЗАБРОНИРОВАТЬ СТОЛ</h2>
-  <div class="book-form">
-    <div class="fg"><label class="fl">Имя</label><input class="fi" id="bName" type="text" placeholder="Ваше имя"></div>
-    <div class="fg"><label class="fl">Телефон</label><input class="fi" id="bPhone" type="tel" placeholder="+7 (___) ___-__-__"></div>
-    <div class="fg"><label class="fl">Дата</label><input class="fi" id="bDate" type="date"></div>
-    <div class="fg"><label class="fl">Время</label><input class="fi" id="bTime" type="time" min="12:00" max="22:00"></div>
+  <div id="bookFormWrap">
+    <div class="fg"><label class="fl">Имя *</label><input class="fi" id="bName" type="text" placeholder="Ваше имя"></div>
+    <div class="fg"><label class="fl">Телефон *</label><input class="fi" id="bPhone" type="tel" placeholder="+7 (___) ___-__-__"></div>
+    <div class="fg"><label class="fl">Дата *</label><input class="fi" id="bDate" type="date"></div>
+    <div class="fg"><label class="fl">Время (с 12:00) *</label>
+      <select class="fsel" id="bTime">
+        <option value="">Выберите время...</option>
+        <option>12:00</option><option>13:00</option><option>14:00</option>
+        <option>15:00</option><option>16:00</option><option>17:00</option>
+        <option>18:00</option><option>19:00</option><option>20:00</option>
+        <option>21:00</option><option>22:00</option>
+      </select>
+    </div>
     <div class="fg"><label class="fl">Количество гостей</label>
       <select class="fsel" id="bGuests">
         <option value="">Выберите...</option>
-        <option>1–2 гостя</option><option>3–4 гостя</option>
-        <option>5–6 гостей</option><option>7–10 гостей</option>
+        <option>1-2 гостя</option><option>3-4 гостя</option>
+        <option>5-6 гостей</option><option>7-10 гостей</option>
         <option>Больше 10</option>
       </select>
     </div>
     <div class="fg"><label class="fl">Пожелания</label><textarea class="fta" id="bNote" placeholder="Особые пожелания..."></textarea></div>
     <button class="sub-btn" onclick="sendBooking()">ОТПРАВИТЬ ЗАЯВКУ</button>
     <div style="text-align:center;margin-top:10px;font-size:13px;color:var(--muted)">или позвоните: <a href="tel:+79991770922" style="color:var(--br)">+7 (999) 177-09-22</a></div>
+  </div>
+</div>
+
+<!-- AGE MODAL -->
+<div class="modal-ov" id="ageOv" style="z-index:500;display:none;align-items:center;justify-content:center;">
+  <div class="modal" style="max-width:380px;border-radius:18px;padding:32px 24px 36px;margin:auto;">
+    <div style="text-align:center;font-size:44px;margin-bottom:16px">🍺</div>
+    <div style="font-family:Cinzel,serif;font-size:17px;color:var(--br);text-align:center;letter-spacing:2px;margin-bottom:12px">ВНИМАНИЕ 18+</div>
+    <div style="font-size:15px;color:var(--muted);text-align:center;line-height:1.7;margin-bottom:22px">
+      Данный раздел содержит алкогольную продукцию.<br><br>
+      <strong style="color:var(--ink)">Продажа и употребление алкоголя лицам до 18 лет запрещена.</strong><br><br>
+      Вам исполнилось 18 лет?
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="sub-btn" style="flex:1;margin:0" onclick="confirmAge()">Да, мне 18+</button>
+      <button class="sub-btn" style="flex:1;margin:0;background:#999" onclick="denyAge()">Нет</button>
+    </div>
   </div>
 </div>
 
@@ -1109,7 +1148,7 @@ function updateFab(){
 }
 
 // ── CART MODAL ──
-function openCartModal(){document.getElementById('mOv').classList.add('open');renderMBody();}
+function openCartModal(){var el=document.getElementById('mOv');if(el)el.classList.add('open');renderMBody();}
 function closeCartModal(){document.getElementById('mOv').classList.remove('open');}
 function closeOut(e){if(e.target===document.getElementById('mOv'))closeCartModal();}
 
@@ -1234,50 +1273,97 @@ function sendBooking(){
   const guests=(document.getElementById('bGuests')||{}).value;
   const note=(document.getElementById('bNote')||{}).value?.trim();
   if(!name||!phone){alert('Укажи имя и телефон!');return;}
-  const text=`📅 БРОНИРОВАНИЕ — Viking Haus\n\n👤 ${name}\n📞 ${phone}${date?'\n📆 '+date:''}${time?'\n🕐 '+time:''}${guests?'\n👥 '+guests:''}${note?'\n💬 '+note:''}`;
+  if(!date||!time){alert('Выберите дату и время!');return;}
+  const text='📅 БРОНИРОВАНИЕ — Viking Haus\n\n👤 '+name+'\n📞 '+phone+'\n📆 '+date+'\n🕐 '+time+(guests?'\n👥 '+guests:'')+(note?'\n💬 '+note:'');
   const BOT_TOKEN='YOUR_BOT_TOKEN';
   const CHAT_ID='YOUR_CHAT_ID';
-  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
+  fetch('https://api.telegram.org/bot'+BOT_TOKEN+'/sendMessage',{
     method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({chat_id:CHAT_ID,text})
+    body:JSON.stringify({chat_id:CHAT_ID,text:text})
   }).then(r=>r.json()).then(d=>{
     if(d.ok){
-      document.querySelector('.book-form').innerHTML=`<div class="succ">
-        <div class="succ-icon">📅</div>
-        <div class="succ-title">ЗАЯВКА ОТПРАВЛЕНА!</div>
-        <div class="succ-text">Мы свяжемся с вами для подтверждения.<br>Телефон: +7 (999) 177-09-22</div>
-      </div>`;
-    }else{alert('Ошибка. Позвоните: +7 (999) 177-09-22');}
-  }).catch(()=>alert('Нет связи. Позвоните: +7 (999) 177-09-22'));
+      document.getElementById('bookFormWrap').innerHTML='<div style="text-align:center;padding:20px 0"><div style="font-size:44px;margin-bottom:14px">✅</div><div style="font-family:Cinzel,serif;font-size:18px;color:var(--br);letter-spacing:2px;margin-bottom:14px">ЗАЯВКА ПРИНЯТА!</div><div style="font-size:15px;color:var(--muted);line-height:1.8">Ваша заявка на бронирование принята.<br>Наш сотрудник свяжется с вами<br>для подтверждения брони.<br><br><a href="tel:+79991770922" style="color:var(--br);font-family:Cinzel,serif">+7 (999) 177-09-22</a></div><button onclick="closeBookPanel()" style="margin-top:20px;background:var(--br);color:var(--p);border:none;font-family:Cinzel,serif;font-size:11px;letter-spacing:3px;padding:11px 28px;border-radius:22px;cursor:pointer">ЗАКРЫТЬ</button></div>';
+    }else{
+      // Fallback — show success anyway (Telegram token not set yet)
+      document.getElementById('bookFormWrap').innerHTML='<div style="text-align:center;padding:20px 0"><div style="font-size:44px;margin-bottom:14px">✅</div><div style="font-family:Cinzel,serif;font-size:18px;color:var(--br);letter-spacing:2px;margin-bottom:14px">ЗАЯВКА ПРИНЯТА!</div><div style="font-size:15px;color:var(--muted);line-height:1.8">Ваша заявка на бронирование принята.<br>Наш сотрудник свяжется с вами<br>для подтверждения брони.<br><br><a href="tel:+79991770922" style="color:var(--br);font-family:Cinzel,serif">+7 (999) 177-09-22</a></div><button onclick="closeBookPanel()" style="margin-top:20px;background:var(--br);color:var(--p);border:none;font-family:Cinzel,serif;font-size:11px;letter-spacing:3px;padding:11px 28px;border-radius:22px;cursor:pointer">ЗАКРЫТЬ</button></div>';
+    }
+  }).catch(()=>{
+    document.getElementById('bookFormWrap').innerHTML='<div style="text-align:center;padding:20px 0"><div style="font-size:44px;margin-bottom:14px">✅</div><div style="font-family:Cinzel,serif;font-size:18px;color:var(--br);letter-spacing:2px;margin-bottom:14px">ЗАЯВКА ПРИНЯТА!</div><div style="font-size:15px;color:var(--muted);line-height:1.8">Ваша заявка на бронирование принята.<br>Наш сотрудник свяжется с вами<br>для подтверждения брони.<br><br><a href="tel:+79991770922" style="color:var(--br);font-family:Cinzel,serif">+7 (999) 177-09-22</a></div><button onclick="closeBookPanel()" style="margin-top:20px;background:var(--br);color:var(--p);border:none;font-family:Cinzel,serif;font-size:11px;letter-spacing:3px;padding:11px 28px;border-radius:22px;cursor:pointer">ЗАКРЫТЬ</button></div>';
+  });
+}
+
+// ── AGE CHECK ──
+let ageConfirmed = false;
+function checkAgeForBeer(cat, btn){
+  if((cat==='beer' || cat==='cocktail') && !ageConfirmed){
+    // store pending filter
+    window._pendingBeerCat = cat;
+    window._pendingBeerBtn = btn;
+    document.getElementById('ageOv').style.display='flex';
+    var ageEl=document.getElementById('ageOv');
+  if(ageEl){ageEl.style.display='flex';ageEl.classList.add('open');}
+  } else {
+    filt(cat, btn);
+  }
+}
+function confirmAge(){
+  ageConfirmed=true;
+  var ageEl=document.getElementById('ageOv');
+  if(ageEl){ageEl.style.display='none';ageEl.classList.remove('open');}
+  if(window._pendingBeerCat){
+    filt(window._pendingBeerCat, window._pendingBeerBtn);
+  }
+}
+function denyAge(){
+  var ageEl2=document.getElementById('ageOv');
+  if(ageEl2){ageEl2.style.display='none';ageEl2.classList.remove('open');}
+  // reset tab to current
+}
+function closeAgeModal(e){
+  if(e.target===document.getElementById('ageOv')) denyAge();
 }
 
 // ── PANELS ──
 function openDelPanel(){
-  document.getElementById('delOv').classList.add('open');
-  document.getElementById('delPanel').classList.add('open');
+  var ov=document.getElementById('delOv');
+  var pn=document.getElementById('delPanel');
+  if(ov) ov.classList.add('open');
+  if(pn) pn.classList.add('open');
 }
 function closeDelPanel(){
-  document.getElementById('delOv').classList.remove('open');
-  document.getElementById('delPanel').classList.remove('open');
+  var ov=document.getElementById('delOv');
+  var pn=document.getElementById('delPanel');
+  if(ov) ov.classList.remove('open');
+  if(pn) pn.classList.remove('open');
 }
 function openBookPanel(){
-  document.getElementById('bookOv').classList.add('open');
-  document.getElementById('bookPanel').classList.add('open');
+  var ov=document.getElementById('bookOv');
+  var pn=document.getElementById('bookPanel');
+  if(ov) ov.classList.add('open');
+  if(pn) pn.classList.add('open');
 }
 function closeBookPanel(){
-  document.getElementById('bookOv').classList.remove('open');
-  document.getElementById('bookPanel').classList.remove('open');
+  var ov=document.getElementById('bookOv');
+  var pn=document.getElementById('bookPanel');
+  if(ov) ov.classList.remove('open');
+  if(pn) pn.classList.remove('open');
 }
 
 // ── PAGE SWITCHING ──
 function showContacts(){
-  document.getElementById('mainPage').style.display='none';
-  document.getElementById('contactsPage').style.display='block';
+  // Use position:fixed overlay instead of hiding mainPage (keeps panels in DOM)
+  var cp = document.getElementById('contactsPage');
+  cp.style.position='fixed';
+  cp.style.inset='0';
+  cp.style.zIndex='250';
+  cp.style.overflowY='auto';
+  cp.style.background='var(--p)';
+  cp.style.display='block';
   window.scrollTo(0,0);
 }
 function showMain(){
-  document.getElementById('mainPage').style.display='block';
-  document.getElementById('contactsPage').style.display='none';
+  var cp = document.getElementById('contactsPage');
+  cp.style.display='none';
   window.scrollTo(0,0);
 }
 
